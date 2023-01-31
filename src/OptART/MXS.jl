@@ -5,7 +5,7 @@ Meta eXecution System
 """
 module MXS
 
-export Namespace, lookup, assign
+export Namespace, defined, define
 
 
 struct Namespace
@@ -62,14 +62,13 @@ function Base.iterate(ns::Namespace, prev_i::Int=0)
   return (ns.names[i] => ns.assignables[i], i)
 end
 
-"""    lookup(ns::Namespace, name::Symbol)::Union{Nothing,Ref{Any}}
 
-lookup a name in the namespace
+"""    defined(ns::Namespace, name::Symbol)::Union{Nothing,Ref{Any}}
 
-return a reference to the value slot (i.e. assignable) if it's ever assigned, or `nothing` if that name is never assigned.
+lookup a named value slot (i.e. assignable) in the namespace
 
 """
-function lookup(ns::Namespace, name::Symbol)::Union{Nothing,Ref{Any}}
+function defined(ns::Namespace, name::Symbol)::Union{Nothing,Ref{Any}}
   i = get(ns.dict, name, nothing)
   if i === nothing
     return nothing
@@ -77,29 +76,25 @@ function lookup(ns::Namespace, name::Symbol)::Union{Nothing,Ref{Any}}
   return Ref(ns.assignables, i)
 end
 
-"""    assign(ns::Namespace, name::Symbol, value::Any)::Ref{Any}
+"""    define(ns::Namespace, name::Symbol )::Ref{Any}
 
-assign a value by a name in the namespace
-
-return a reference to the value slot (i.e. assignable)
+define a named value slot (i.e. assignable) in the namespace
 
 """
-function assign(ns::Namespace, name::Symbol, value::Any)::Ref{Any}
+function define(ns::Namespace, name::Symbol)::Ref{Any}
   lock(ns.mutex) do
     i = get(ns.dict, name, nothing)
-    if i !== nothing
-      ns.assignables[i] = value
-      return Ref(ns.assignables, i)
+    if i === nothing
+      i = length(ns.names) + 1
+      resize!(ns.names, i)
+      resize!(ns.assignables, i)
+      ns.names[i] = name
+      ns.dict[name] = i
     end
-    i = length(ns.assignables) + 1
-    resize!(ns.assignables, i)
-    resize!(ns.names, i)
-    ns.names[i] = name
-    ns.assignables[i] = value
-    ns.dict[name] = i
     return Ref(ns.assignables, i)
   end
 end
+
 
 
 
