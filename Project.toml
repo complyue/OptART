@@ -1,0 +1,9 @@
+name = "OptART"
+uuid = "08c3bb89-b2ee-4caf-8c12-984f04cc9df9"
+authors = ["ComplYue <compl.yue@icloud.com>"]
+version = "0.1.0"
+
+[deps]
+REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
+ReplMaker = "b873ce64-0db9-51f5-a568-4457d8e49576"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
