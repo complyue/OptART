@@ -5,7 +5,18 @@ Meta eXecution System
 """
 module MXS
 
+
+export UoMDef
+
 export Namespace, defined, define
+
+export Scope
+
+
+struct UoMDef
+  id::Symbol # identifier
+  conversions::Dict{UoMDef,Function}  # conversion rules
+end
 
 
 struct Namespace
@@ -49,8 +60,8 @@ Base.IteratorSize(::Type{Namespace}) = Base.HasLength()
 Base.IteratorEltype(::Type{Namespace}) = Base.HasEltype()
 
 # trivial impl.
-Base.eltype(::Type{Namespace}) = Pair{Symbol,Any}
 Base.length(ns::Namespace) = length(ns.names)
+Base.eltype(::Type{Namespace}) = Pair{Symbol,Any}
 
 # give out snapshot values per all defined names
 function Base.iterate(ns::Namespace, prev_i::Int=0)
@@ -95,6 +106,15 @@ function define(ns::Namespace, name::Symbol)::Ref{Any}
   end
 end
 
+
+struct Scope
+  arts::Namespace # usual artifacts
+  uoms::Dict{Symbol,UoMDef} # UoM definitions
+
+  outer::Union{Nothing,Scope}
+
+  Scope(outer::Union{Nothing,Scope}=nothing) = new(Namespace(), Dict{Symbol,UoMDef}(), outer)
+end
 
 
 
