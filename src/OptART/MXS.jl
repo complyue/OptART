@@ -18,15 +18,7 @@ export Scope
 include("./MXS/scope.jl")
 
 
-
-function keyword_interpreter(kw::Symbol, interpreter::Function; context)
-
-end
-
-
-function assign_interp()
-
-end
+include("./MXS/interp.jl")
 
 
 end # module MXS 
