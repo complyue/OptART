@@ -1,4 +1,4 @@
-# Optimize At the Right Time
+# Optimize At Right Time
 
 [premature optimization is the root of all evil.](https://dl.acm.org/doi/10.1145/356635.356640)
 
